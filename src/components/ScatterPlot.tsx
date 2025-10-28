@@ -7,7 +7,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  ZAxis,
 } from "recharts";
 import type { Experiment } from "../utils/parseDataset";
 
@@ -23,12 +22,10 @@ export default function ScatterPlot({
   data,
   xKey,
   yKey,
-  colorKey,
 }: {
   data: Experiment[];
   xKey: string;
   yKey: string;
-  colorKey?: string;
 }) {
   const points = useMemo(
     () =>
@@ -37,12 +34,11 @@ export default function ScatterPlot({
           id: d.id,
           x: safeGet(d, xKey),
           y: safeGet(d, yKey),
-          color: colorKey ? safeGet(d, colorKey) : undefined,
           inputs: d.inputs,
           outputs: d.outputs,
         }))
         .filter((p) => p.x !== null && p.y !== null),
-    [data, xKey, yKey, colorKey]
+    [data, xKey, yKey]
   );
 
   return (
@@ -67,9 +63,6 @@ export default function ScatterPlot({
               name={yKey}
               tick={{ fontSize: 12 }}
             />
-            {colorKey && (
-              <ZAxis type="number" dataKey="color" range={[60, 400]} />
-            )}
             <Tooltip
               cursor={{ strokeDasharray: "3 3" }}
               content={({ active, payload }: any) => {
