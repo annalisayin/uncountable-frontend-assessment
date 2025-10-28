@@ -46,7 +46,7 @@ export default function ScatterPlot({
   );
 
   return (
-    <div className="bg-white/95 dark:bg-slate-900 p-4 rounded-2xl shadow-lg h-[520px] border border-slate-100 dark:border-slate-700">
+  <div className="bg-white p-4 rounded-xl shadow h-[520px] border">
       {!xKey || !yKey ? (
         <div className="flex h-full items-center justify-center text-slate-500">
           Select X and Y to begin
@@ -105,7 +105,6 @@ export default function ScatterPlot({
             <Scatter
               name="Experiments"
               data={points}
-              fill="#6366f1"
               line={false}
             />
           </ScatterChart>

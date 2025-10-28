@@ -1,9 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import datasetRaw from "./data/dataset.json";
-import {
-  parseDataset,
-  listNumericKeys,
-} from "./utils/parseDataset";
+import { parseDataset, listNumericKeys } from "./utils/parseDataset";
 import ControlPanel from "./components/ControlPanel";
 import ScatterPlot from "./components/ScatterPlot";
 
@@ -22,9 +19,7 @@ function App() {
 
   const [xSelection, setXSelection] = useState<string>("i:Polymer 1");
   const [ySelection, setYSelection] = useState<string>("o:Tensile Strength");
-  const [colorSelection, setColorSelection] = useState<string | undefined>(
-    undefined
-  );
+
   // Filtering controls
   const [filterKey, setFilterKey] = useState<string | undefined>(undefined);
   const [filterMin, setFilterMin] = useState<string | undefined>(undefined);
@@ -43,8 +38,14 @@ function App() {
   const filteredData = useMemo(() => {
     let fd = data.slice();
     if (filterKey) {
-      const min = filterMin !== undefined && filterMin !== "" ? Number(filterMin) : undefined;
-      const max = filterMax !== undefined && filterMax !== "" ? Number(filterMax) : undefined;
+      const min =
+        filterMin !== undefined && filterMin !== ""
+          ? Number(filterMin)
+          : undefined;
+      const max =
+        filterMax !== undefined && filterMax !== ""
+          ? Number(filterMax)
+          : undefined;
       fd = fd.filter((d) => {
         const v = safeGet(d, filterKey);
         if (v === null || v === undefined) return false;
@@ -68,14 +69,14 @@ function App() {
   }, [filteredData, xSelection, ySelection]);
 
   return (
-    <div className="min-h-screen py-12">
-      <div className="max-w-6xl mx-auto px-6">
+    <div className="min-h-screen py-8">
+      <div className="max-w-7xl mx-auto px-8">
         <header className="flex items-center gap-4 mb-6">
           <div>
-            <h1 className="text-3xl md:text-4xl font-semibold text-slate-900 dark:text-white">
+            <h1 className="text-2xl font-semibold">
               Uncountable — Data Explorer
             </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
+            <p className="text-sm text-gray-600">
               Select variables (inputs or outputs) to visualize relationships
               across experiments.
             </p>
@@ -84,26 +85,27 @@ function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
           <div className="lg:col-span-1">
-              <ControlPanel
-                xSelection={xSelection}
-                ySelection={ySelection}
-                colorSelection={colorSelection}
-                filterKey={filterKey}
-                filterMin={filterMin}
-                filterMax={filterMax}
-                pointCount={pointCount}
-                options={{ inputs: inputKeys, outputs: outputKeys }}
-                onChange={(c) => {
-                  if (c.x !== undefined) setXSelection(c.x || "");
-                  if (c.y !== undefined) setYSelection(c.y || "");
-                  if (c.color !== undefined) setColorSelection(c.color || undefined);
-                  if (c.filterKey !== undefined) setFilterKey(c.filterKey || undefined);
-                  if (c.filterMin !== undefined) setFilterMin(c.filterMin || undefined);
-                  if (c.filterMax !== undefined) setFilterMax(c.filterMax || undefined);
-                }}
-              />
+            <ControlPanel
+              xSelection={xSelection}
+              ySelection={ySelection}
+              filterKey={filterKey}
+              filterMin={filterMin}
+              filterMax={filterMax}
+              pointCount={pointCount}
+              options={{ inputs: inputKeys, outputs: outputKeys }}
+              onChange={(c) => {
+                if (c.x !== undefined) setXSelection(c.x || "");
+                if (c.y !== undefined) setYSelection(c.y || "");
+                if (c.filterKey !== undefined)
+                  setFilterKey(c.filterKey || undefined);
+                if (c.filterMin !== undefined)
+                  setFilterMin(c.filterMin || undefined);
+                if (c.filterMax !== undefined)
+                  setFilterMax(c.filterMax || undefined);
+              }}
+            />
 
-            <div className="mt-4 bg-white/60 p-4 rounded-2xl shadow">
+            <div className="mt-4 bg-white p-4 rounded-xl shadow">
               <h3 className="text-sm font-medium mb-2">Selections</h3>
               <div className="text-sm text-slate-600">
                 X:{" "}
@@ -114,12 +116,6 @@ function App() {
                 <span className="font-medium">{prettyLabel(ySelection)}</span>
               </div>
               <div className="text-sm text-slate-600">
-                Color:{" "}
-                <span className="font-medium">
-                  {colorSelection ? prettyLabel(colorSelection) : "—"}
-                </span>
-              </div>
-              <div className="text-sm text-slate-600">
                 Filter key:{" "}
                 <span className="font-medium">
                   {filterKey ? prettyLabel(filterKey) : "—"}
@@ -127,7 +123,7 @@ function App() {
               </div>
             </div>
 
-            <div className="mt-4 bg-white/60 p-4 rounded-2xl shadow text-sm text-slate-600">
+            <div className="mt-4 bg-white p-4 rounded-xl shadow text-sm text-gray-600">
               <div className="font-medium mb-2">Dataset stats</div>
               <div>
                 Experiments: <span className="font-medium">{data.length}</span>
@@ -142,12 +138,11 @@ function App() {
             </div>
           </div>
 
-          <div className="lg:col-span-3">
+          <div className="md:col-span-3">
             <ScatterPlot
               data={filteredData}
               xKey={xSelection}
               yKey={ySelection}
-              colorKey={colorSelection}
             />
           </div>
         </div>
